@@ -105,6 +105,6 @@ Once the server is running, open:
 
 ## Author
 
-Jaswanth G. Sainath Reddy
+G Jaswanth Sainath Reddy
 
 GitHub: https://github.com/jaswanthg9412
