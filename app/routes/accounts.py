@@ -59,6 +59,36 @@ def view_accounts():
             detail="Could not retrieve accounts"
         ) from error
 
+@router.get("/{account_number}", response_model=AccountResponse)
+def view_single_account(account_number: int):
+    try:
+        accounts = get_accounts()
+
+        account = next(
+            (acc for acc in accounts if acc[0] == account_number),
+            None
+        )
+
+        if account is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Account not found"
+            )
+
+        return {
+            "account_number": account[0],
+            "account_holder": account[1],
+            "balance": float(account[2])
+        }
+
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail="Could not retrieve account"
+        ) from error
+
 
 # Deposit Money
 @router.post("/{account_number}/deposit", response_model=DepositResponse)

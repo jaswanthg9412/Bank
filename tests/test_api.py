@@ -161,3 +161,34 @@ def test_transaction_history_account_not_found(monkeypatch):
     assert response.json() == {
         "detail": "Account not found"
     }
+
+def test_get_single_account(monkeypatch):
+    monkeypatch.setattr(
+        "app.routes.accounts.get_accounts",
+        lambda: [
+            (1001, "Test User", 1500.0),
+            (1002, "Another User", 2000.0)
+        ]
+    )
+
+    response = client.get("/accounts/1001")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "account_number": 1001,
+        "account_holder": "Test User",
+        "balance": 1500.0
+    }
+
+def test_get_single_account_not_found(monkeypatch):
+    monkeypatch.setattr(
+        "app.routes.accounts.get_accounts",
+        lambda: []
+    )
+
+    response = client.get("/accounts/9999")
+
+    assert response.status_code == 404
+    assert response.json() == {
+        "detail": "Account not found"
+    }
