@@ -7,7 +7,15 @@ from app.database import (
     withdraw_money,
     get_transaction_history
 )
-from app.models import AccountCreate, AmountRequest
+from app.models import (
+    AccountCreate,
+    AmountRequest,
+    AccountCreatedResponse,
+    AccountResponse,
+    DepositResponse,
+    WithdrawalResponse,
+    TransactionHistoryResponse
+)
 
 router = APIRouter(
     prefix="/accounts",
@@ -16,7 +24,7 @@ router = APIRouter(
 
 
 # Create Account
-@router.post("/")
+@router.post("/", response_model=AccountCreatedResponse)
 def create_bank_account(account: AccountCreate):
     try:
         account_number = create_account(account.name)
@@ -33,7 +41,7 @@ def create_bank_account(account: AccountCreate):
 
 
 # View All Accounts
-@router.get("/")
+@router.get("/", response_model=list[AccountResponse])
 def view_accounts():
     try:
         accounts = get_accounts()
@@ -53,7 +61,7 @@ def view_accounts():
 
 
 # Deposit Money
-@router.post("/{account_number}/deposit")
+@router.post("/{account_number}/deposit", response_model=DepositResponse)
 def deposit(account_number: int, request: AmountRequest):
     try:
         result = deposit_money(account_number, request.amount)
@@ -82,7 +90,7 @@ def deposit(account_number: int, request: AmountRequest):
 
 
 # Withdraw Money
-@router.post("/{account_number}/withdraw")
+@router.post("/{account_number}/withdraw", response_model=WithdrawalResponse)
 def withdraw(account_number: int, request: AmountRequest):
     try:
         result = withdraw_money(account_number, request.amount)
@@ -117,7 +125,7 @@ def withdraw(account_number: int, request: AmountRequest):
 
 
 # Transaction History
-@router.get("/{account_number}/transactions")
+@router.get("/{account_number}/transactions", response_model=TransactionHistoryResponse)
 def transaction_history(account_number: int):
     try:
         accounts = get_accounts()
